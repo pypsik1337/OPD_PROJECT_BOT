@@ -3,8 +3,9 @@
 # :return: объект реплай-клавиатуры
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
+# Это словарь для клавиатуры
 kb_bot = ["Расчитать ежемесячный платеж", "Расчитать ипотечный платеж", "Досрочное погашение кредита"]
-kb_ipoteka = ["Да", "Нет"]
+# kb_ipoteka = ["Да", "Нет"]
 
 def make_row_keyboard(items: list[str]) -> ReplyKeyboardMarkup:
     row = [KeyboardButton(text=item) for item in items]
