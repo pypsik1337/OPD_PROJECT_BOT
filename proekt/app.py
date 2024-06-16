@@ -1,6 +1,6 @@
 import asyncio
 import os
-from aiogram import Bot, Dispatcher // импортирт класска BOT и Диспетчер
+from aiogram import Bot, Dispatcher # импортирт класска BOT и Диспетчер
 
 
 
