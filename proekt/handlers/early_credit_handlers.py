@@ -1,3 +1,6 @@
+# В этом файле все хендлеры на расчет кредита с досрочным погашением.
+# Все хендлеры сделаны аналогично другим, меняется только формула в конфе и количество state.
+
 from aiogram.filters import Command
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
@@ -64,19 +67,19 @@ async def cmd_finaly_ecredit(message: Message, state: FSMContext):
     try:
         await state.update_data(chosen_eterm = float(message.text))
         user_data = await state.get_data()
-        months_rate = user_data["chosen_procent_ecredit"]/100/12
-        d_rate = user_data["chosen_esum"]
-        d_month = user_data['chosen_eterm']
-        sum_credit = user_data["chosen_ecredit_sum"]
+        months_rate = user_data["chosen_procent_ecredit"]/100/12 # Расчет ежемесячного процента
+        d_rate = user_data["chosen_esum"] # СУММА ДЛЯ ДОСРОЧНОГО ПОГАШЕНИЯ
+        d_month = user_data['chosen_eterm'] # МЕСЯЦ ПО СЧЕТУ В КОТОРЫЙ БЫЛ ВНЕСЕН ДОСРОЧНЫЙ ПЛАТЕЖ
+        sum_credit = user_data["chosen_ecredit_sum"] 
         months = user_data["chosen_term"]
-        months_pay = (sum_credit * months_rate) / (1- (1+months_rate) ** -months)
-        total_sum_credit = months_pay * months
-        OD_sum = months_pay *(d_month)
-        dosrok_ostat_sum = sum_credit - OD_sum
+        months_pay = (sum_credit * months_rate) / (1- (1+months_rate) ** -months) # расчет просто месячного платежа
+        total_sum_credit = months_pay * months # расчитывается вся сумма по кредиту
+        OD_sum = months_pay *(d_month) # тут расчитывается сумма которая была уже внесена до досрочного платежа, нужно для расчета дальнейшего процента
+        dosrok_ostat_sum = sum_credit - OD_sum  # сумма основного долга по кредиту
         
-        dp_sum_credit = dosrok_ostat_sum - d_rate
+        dp_sum_credit = dosrok_ostat_sum - d_rate # Отнимаем от суммы досрочный платеж
         
-        dp_months_pay = (dp_sum_credit * months_rate) / (1- (1+months_rate) ** -(months-d_month))
+        dp_months_pay = (dp_sum_credit * months_rate) / (1- (1+months_rate) ** -(months-d_month)) # тут идет перерасчет основного месячного платежа, после внесения досрочного платежа
         await message.answer(f"Сумма вашего кредита равна: {user_data["chosen_ecredit_sum"]}руб.\n" 
                              f"Процент: {user_data['chosen_procent_ecredit']}% годовых.\n"
                              f"Срок: {user_data['chosen_term']} мес.\n"
