@@ -1,3 +1,5 @@
+# В этом файле хендлеры для расчета ипотеченого кредитования
+
 from aiogram.filters import Command
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
